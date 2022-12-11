@@ -2,24 +2,6 @@
 session_start();
 include('server.php');
 include('news.php');
-include('single-server.php');
-if (isset($_POST['add_comment'])) 
-{
-    $post_id = $id;
-    $comment = mysqli_real_escape_string($db, $_POST['comment']);
-    $author = $_SESSION['user']['id'];
-    if (empty($comment)) {
-        array_push($errors, "Вы не ввели комменатарий");
-    }
-    if (count($errors) == 0) {
-        $comment_add = "INSERT INTO comment (post_id, text, comment_author) VALUES('$post_id', '$comment', '$author')";
-        mysqli_query($db, $comment_add);
-
-        header("Refresh:0");
-    }
-}
-$comment_quary = "SELECT c.comment_id, c.text, c.date, u.login, u.avatar FROM comment c INNER JOIN user u ON c.comment_author = u.user_id WHERE c.post_id = '$id'";
-$comment_result = mysqli_query($db, $comment_quary);
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -92,7 +74,8 @@ $comment_result = mysqli_query($db, $comment_quary);
                             <form class="d-flex">
                                 <?php
                                 if (isset($_SESSION['user']) && ($_SESSION['user']['login'] == $single['login'] || $_SESSION['user']['role'] == 'Admin')) { ?>
-                                <a class="btn btn-outline-danger" href="edit_article.php?id=<?= $single['post_id'] ?>">Редактировать статью</a>
+                                <a class="btn btn-outline-danger"
+                                    href="edit_article.php?id=<?= $single['post_id'] ?>">Редактировать статью</a>
                                 <?php } else { ?>
                                 <form class="d-flex" role="search">
                                     <input class="form-control me-2" type="search" placeholder="Поиск статей"
@@ -112,30 +95,38 @@ $comment_result = mysqli_query($db, $comment_quary);
         <div class="grid">
             <div class="news">
                 <div class="mt-3 card" style="width: 800px; align-items: center;">
-                    <img src="<?php echo $single['picture'] ?>" class="card-img-top"
+                    <img src="<?= $single['picture'] ?>" class="card-img-top"
                         style="margin-left: 8px; width: 90%; height: auto; border-radius: 15px; padding: 6px 0px;"
                         alt="">
                     <div class="card-body">
-                        <p style="display: flex; justify-content: space-between;">
-                            <a href="index.php?category=<?php echo $category; ?>"
+                        <p style="display: flex; justify-content: space-between">
+                            <a href="index.php?category=<?= $single['category_id']; ?>"
                                 style="text-align: left; color: red; ">
-                                <?php echo $single['category_name']; ?>
+                                <?= $single['category_name']; ?>
                             </a>
-                            <span style="text-align: end; ">
-                                <?php echo $single['date']; ?>
+                            <span>
+                                <?= $single['date']; ?>
                             </span>
                         </p>
                         <div style="border-bottom: 2px solid blue;"></div>
                         <h5 class="card-title" style="text-align: center; margin-top: 20px;">
-                            <?php echo $single['title']; ?>
+                            <?= $single['title']; ?>
                         </h5>
                         <p class="card-text">
-                            <?php echo $single['text']; ?>
+                            <?= $single['text']; ?>
                         </p>
                         <p class="author" style="text-align: right;">
                             Автор:
-                            <?php echo $single['login'] ?>
+                            <?= $single['login'] ?>
                         </p>
+
+                        <?php if (isset($_SESSION['user']) && ($_SESSION['user']['login'] == $single['login'] || $_SESSION['user']['role'] == 'Admin')) { ?>
+                        <form method="post" class="d-flex" style="justify-content: end;">
+                            <button class="btn btn-outline-danger" type="sumbit" style="margin: 5px 5px;"
+                                name="remove_article" value="<?= $single['post_id'] ?>">Удалить Статью
+                            </button>
+                        </form>
+                        <?php } ?>
                     </div>
                 </div>
             </div>
@@ -148,22 +139,22 @@ $comment_result = mysqli_query($db, $comment_quary);
             <div class="category">
                 <?php $last_news = mysqli_fetch_assoc($last_result) ?>
                 <div class="card" style="width: 268px;">
-                    <img src="<?php echo $last_news['picture'] ?>" class="card-img-top last-news" alt="">
+                    <img src="<?= $last_news['picture'] ?>" class="card-img-top last-news" alt="">
                     <div class="card-body">
                         <p style="text-align: center; color: black;">
                             Последняя новость!
                         </p>
-                        <a href="index.php?category=<?php echo $last_news['category_id'] ?>"
+                        <a href="index.php?category=<?= $last_news['category_id'] ?>"
                             style="text-align: left; color: red; ">
-                            <?php echo $last_news['category_name']; ?>
+                            <?= $last_news['category_name']; ?>
                         </a>
                         <p class="card-text">
-                            <?php echo mb_strimwidth($last_news['text'], 0, 80, '...'); ?>
+                            <?= mb_strimwidth($last_news['text'], 0, 80, '...'); ?>
                         </p>
                         <p class="time">
-                            <?php echo $last_news['date']; ?>
+                            <?= $last_news['date']; ?>
                         </p>
-                        <a href="single.php?id=<?php echo $last_news['post_id'] ?>" class="btn btn-primary">Читать
+                        <a href="single.php?id=<?= $last_news['post_id'] ?>" class="btn btn-primary">Читать
                             далее</a>
                     </div>
                 </div>
@@ -172,15 +163,17 @@ $comment_result = mysqli_query($db, $comment_quary);
     </div>
     <div class="container mt-3" style="width: 1100px;">
         <div class="d-flex flex-row  mt-3 mb-3" style="width: 800px;">
+            <?php if (isset($_SESSION['user'])) { ?>
             <form class="d-flex flex-row" method="post">
                 <img class="img-fluid img-responsive" style="margin-right: 10px;"
                     src="<?= $_SESSION['user']['avatar']; ?>" width="38">
                 <input type="text" class="form-control" placeholder="Добавьте комментарий" name="comment"
                     style="width: 640px;">
                 <button class="btn btn-primary" type="sumbit" style="margin-left:20px;"
-                    name="add_comment">Comment</button>
+                    name="add_comment">Опубликовать</button>
+            </form>
+            <?php } ?>
         </div>
-        </form>
     </div>
     <div class="row" style="max-width: 825px; margin-left:190.4px;">
         <div class="col-12">
@@ -204,6 +197,14 @@ $comment_result = mysqli_query($db, $comment_quary);
                                         <p class="small mb-0">
                                             <?= $comment['text']; ?>
                                         </p>
+                                        <?php if (isset($_SESSION['user']) && ($_SESSION['user']['login'] == $comment['login'] || $_SESSION['user']['role'] == 'Admin')) { ?>
+                                        <form method="post" class="d-flex" style=" justify-content: end;">
+                                            <button class="btn btn-outline-danger btn-sm" type="sumbit"
+                                                style="margin: 5px 5px;" name="remove_comment"
+                                                value="<?= $comment['comment_id'] ?>">Удалить комментарий
+                                            </button>
+                                        </form>
+                                        <?php } ?>
                                     </div>
                                 </div>
                             </div>

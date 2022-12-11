@@ -2,11 +2,6 @@
 session_start();
 include('server.php');
 include('news.php');
-if (empty($_GET['category'])) {
-    $category = 0;
-} else {
-    $category = $_GET['category'];
-}
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -28,7 +23,7 @@ if (empty($_GET['category'])) {
         <nav class="navbar navbar-expand-lg bg-light">
             <div class="container-fluid">
                 <a class="navbar-brand" href="index.php">Новостной Портал</a>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <div class="collapse navbar-collapse">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
                             <a class="nav-link" href="index.php?category=1">РАЗВЛЕЧЕНИЯ</a>
@@ -52,7 +47,7 @@ if (empty($_GET['category'])) {
                             </a>
                             <ul class="dropdown-menu">
                                 <?php
-if (isset($_SESSION['user'])) { ?>
+                                if (isset($_SESSION['user'])) { ?>
                                 <li><a class="dropdown-item" href="profile.php">Мой профиль</a></li>
                                 <li><a href="logout.php" class="dropdown-item">Выйти</a></li>
                                 <?php } else { ?>
@@ -64,10 +59,10 @@ if (isset($_SESSION['user'])) { ?>
                         <li style="padding-left: 135px">
                             <form class="d-flex" role="search">
                                 <?php
-if (isset($_SESSION['user']) && ($_SESSION['user']['role'] == 'Author' || $_SESSION['user']['role'] == 'Admin')) { ?>
+                                if (isset($_SESSION['user']) && ($_SESSION['user']['role'] == 'Author' || $_SESSION['user']['role'] == 'Admin')) { ?>
                                 <a class="btn btn-outline-success" href="add_article.php">Добавить статью</a>
                                 <?php } else {
-} ?>
+                                } ?>
                             </form>
                         </li>
                     </ul>
@@ -94,67 +89,67 @@ if (isset($_SESSION['user']) && ($_SESSION['user']['role'] == 'Author' || $_SESS
         <div class="grid" ;>
             <div class="news">
                 <?php while ($post = mysqli_fetch_assoc($post_result)) {
-    if (empty($category)) { ?>
+                    if (empty($category)) { ?>
                 <div class="mt-3 card" style="width: 800px; flex-direction: row;">
-                    <img src="<?php echo $post['picture'] ?>" class="card-img-top"
-                        style="margin-left: 8px; width: 250px; height: auto; border-radius: 15px; padding: 6px 0px;"
+                    <img src="<?= $post['picture'] ?>" class="card-img-top"
+                        style="margin-left: 8px; width: 290px; height: auto; border-radius: 15px; padding: 6px 0px;"
                         alt="">
                     <div class="card-body">
                         <p style="display: flex; justify-content: space-between;">
-                            <a href="index.php?category=<?php echo $post['category_id'] ?>"
+                            <a href="index.php?category=<?= $post['category_id'] ?>"
                                 style="text-align: left; color: red; ">
-                                <?php echo $post['category_name']; ?>
+                                <?= $post['category_name']; ?>
                             </a>
-                            <span style="text-align: end; ">
-                                <?php echo $post['date']; ?>
+                            <span style="text-align: end;">
+                                <?= $post['date']; ?>
                             </span>
                         </p>
                         <h5 class="card-title">
-                            <a href="single.php?id=<?php echo $post['post_id'] ?>" style="color: black;">
-                                <?php echo $post['title']; ?>
+                            <a href="single.php?id=<?= $post['post_id'] ?>" style="color: black;">
+                                <?= $post['title']; ?>
                             </a>
                         </h5>
                         <p class="card-text">
-                            <?php echo mb_strimwidth($post['text'], 0, 150, '...'); ?>
+                            <?= mb_strimwidth($post['text'], 0, 150, '...'); ?>
                         </p>
                         <p class="author" style="text-align: left;">
                             Автор:
-                            <?php echo $post['login'] ?>
+                            <?= $post['login'] ?>
                         </p>
-                        <p><a href="single.php?id=<?php echo $post['post_id']; ?>" class="btn btn-primary">Читать
+                        <p><a href="single.php?id=<?= $post['post_id']; ?>" class="btn btn-primary">Читать
                                 далее</a></p>
                     </div>
                 </div>
 
                 <?php } else {
-        if ($category == $post['category_id']) { ?>
+                        if ($category == $post['category_id']) { ?>
                 <div class="mt-3 card" style="width: 800px; flex-direction: row;">
-                    <img src="<?php echo $post['picture'] ?>" class="card-img-top"
+                    <img src="<?= $post['picture'] ?>" class="card-img-top"
                         style="margin-left: 8px; width: 250px; height: auto; border-radius: 15px; padding: 6px 0px;"
                         alt="">
                     <div class="card-body">
                         <p style="display: flex; justify-content: space-between;">
-                            <a href="index.php?category=<?php echo $post['category_id'] ?>"
+                            <a href="index.php?category=<?= $post['category_id'] ?>"
                                 style="text-align: left; color: red; ">
-                                <?php echo $post['category_name']; ?>
+                                <?= $post['category_name']; ?>
                             </a>
                             <span style="text-align: end; ">
-                                <?php echo $post['date']; ?>
+                                <?= $post['date']; ?>
                             </span>
                         </p>
                         <h5 class="card-title">
-                            <a href="single.php?id=<?php echo $post['post_id'] ?>" style="color: black;">
-                                <?php echo $post['title']; ?>
+                            <a href="single.php?id=<?= $post['post_id'] ?>" style="color: black;">
+                                <?= $post['title']; ?>
                             </a>
                         </h5>
                         <p class="card-text">
-                            <?php echo mb_strimwidth($post['text'], 0, 150, '...'); ?>
+                            <?= mb_strimwidth($post['text'], 0, 150, '...'); ?>
                         </p>
                         <p class="author" style="text-align: left;">
                             Автор:
-                            <?php echo $post['login'] ?>
+                            <?= $post['login'] ?>
                         </p>
-                        <p><a href="single.php?id=<?php echo $post['post_id']; ?>" class="btn btn-primary">Читать
+                        <p><a href="single.php?id=<?= $post['post_id']; ?>" class="btn btn-primary">Читать
                                 далее</a></p>
                     </div>
                 </div>
@@ -171,22 +166,22 @@ if (isset($_SESSION['user']) && ($_SESSION['user']['role'] == 'Author' || $_SESS
             <div class="category">
                 <?php $last_news = mysqli_fetch_assoc($last_result) ?>
                 <div class="card" style="width: 268px;">
-                    <img src="<?php echo $last_news['picture'] ?>" class="card-img-top last-news" alt="">
+                    <img src="<?= $last_news['picture'] ?>" class="card-img-top last-news" alt="">
                     <div class="card-body">
                         <p style="text-align: center; color: black;">
                             Последняя новость!
                         </p>
-                        <a href="index.php?category=<?php echo $last_news['category_id'] ?>"
+                        <a href="index.php?category=<?= $last_news['category_id'] ?>"
                             style="text-align: left; color: red; ">
-                            <?php echo $last_news['category_name']; ?>
+                            <?= $last_news['category_name']; ?>
                         </a>
                         <p class="card-text">
-                            <?php echo mb_strimwidth($last_news['text'], 0, 80, '...'); ?>
+                            <?= mb_strimwidth($last_news['text'], 0, 80, '...'); ?>
                         </p>
                         <p class="time">
-                            <?php echo $last_news['date']; ?>
+                            <?= $last_news['date']; ?>
                         </p>
-                        <a href="single.php?id=<?php echo $last_news['post_id']; ?>" class="btn btn-primary">Читать
+                        <a href="single.php?id=<?= $last_news['post_id']; ?>" class="btn btn-primary">Читать
                             далее</a>
                     </div>
                 </div>
@@ -197,4 +192,5 @@ if (isset($_SESSION['user']) && ($_SESSION['user']['role'] == 'Author' || $_SESS
         integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
         crossorigin="anonymous"></script>
 </body>
+
 </html>

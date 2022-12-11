@@ -1,5 +1,5 @@
 <?php include('server.php');
-include('single-server.php');
+include('news.php');
 if (empty($_GET['category'])) {
     $category = 0;
 } else {
