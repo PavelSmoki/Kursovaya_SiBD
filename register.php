@@ -55,9 +55,9 @@ if (empty($_GET['category'])) {
                             </ul>
                         </li>
                     </ul>
-                    <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Поиск статей" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Поиск</button>
+                    <form class="d-flex" role="search" method="post">
+                        <input class="form-control me-2" type="search" placeholder="Поиск статей" name="text">
+                        <button class="btn btn-outline-success" type="submit" name="search">Поиск</button>
                     </form>
                 </div>
             </div>

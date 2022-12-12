@@ -4,6 +4,7 @@ $login = "";
 $email = "";
 $errors = array(); 
 $avatar = "";
+$query_search = "";
 
 $db = mysqli_connect('127.0.0.1', 'root', '', 'portal');
 
@@ -133,7 +134,7 @@ if(isset($_POST['add_article']))
     }
     if (empty($picture)) 
     {
-        array_push($errors, "Вы не ссылку на изображение");
+        array_push($errors, "Вы не ввели ссылку на изображение");
     }
     if (empty($text)) 
     {
@@ -147,4 +148,15 @@ if(isset($_POST['add_article']))
         header('location: index.php');
     }
 }
+
+if (isset($_POST['search'])) {
+    $query_search = mysqli_real_escape_string($db, $_POST['text']);
+    $q = "SELECT p.post_id, p.category_id, c.category_name, p.text, u.login, p.date, p.title, p.picture
+        FROM post p INNER JOIN category c ON p.category_id = c.category_id 
+        INNER JOIN user u ON p.post_author = u.user_id  WHERE p.text LIKE '%$query_search%'
+        OR p.title LIKE '%$query_search%' OR c.category_name LIKE '%$query_search%'";
+    $search_result = mysqli_query($db, $q);
+    header('location: search.php');
+}
+
 ?>

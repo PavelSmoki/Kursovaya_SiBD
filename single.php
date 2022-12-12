@@ -61,7 +61,7 @@ include('news.php');
                                 <?php } ?>
                             </ul>
                         </li>
-                        <li style="padding-left: 220px ">
+                        <li style="padding-left: 130px ">
                             <form class="d-flex">
                                 <?php
                                 if (isset($_SESSION['user']) && ($_SESSION['user']['role'] == 'Author' || $_SESSION['user']['role'] == 'Admin')) { ?>
@@ -79,8 +79,8 @@ include('news.php');
                                 <?php } else { ?>
                                 <form class="d-flex" role="search">
                                     <input class="form-control me-2" type="search" placeholder="Поиск статей"
-                                        aria-label="Search">
-                                    <button class="btn btn-outline-success" type="submit">Поиск</button>
+                                    name="text">
+                                    <button class="btn btn-outline-success" type="submit" name="search">Поиск</button>
                                 </form>
                                 <?php } ?>
                             </form>
@@ -131,9 +131,9 @@ include('news.php');
                 </div>
             </div>
             <div class="search">
-                <form class="d-flex" style="flex-direction: row;" role="search">
-                    <input class="form-control me-2 input" type="search" placeholder="Поиск статей" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Поиск</button>
+                <form class="d-flex" style="flex-direction: row;" method="post">
+                    <input class="form-control me-2 input" type="search" placeholder="Поиск статей" name="text">
+                    <button class="btn btn-outline-success" type="submit" name="search">Поиск</button>
                 </form>
             </div>
             <div class="category">

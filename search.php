@@ -57,7 +57,7 @@ include('news.php');
                             </ul>
                         </li>
                         <li style="padding-left: 135px">
-                            <form class="d-flex">
+                            <form class="d-flex" role="search">
                                 <?php
                                 if (isset($_SESSION['user']) && ($_SESSION['user']['role'] == 'Author' || $_SESSION['user']['role'] == 'Admin')) { ?>
                                 <a class="btn btn-outline-success" href="add_article.php">Добавить статью</a>
@@ -66,9 +66,9 @@ include('news.php');
                             </form>
                         </li>
                     </ul>
-                    <form method="post" class="d-flex">
-                        <input class="form-control me-2" type="search" placeholder="Поиск статей" name="text">
-                        <button class="btn btn-outline-success" type="submit" name="search">Поиск</button>
+                    <form class="d-flex" role="search">
+                        <input class="form-control me-2" type="search" placeholder="Поиск статей" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Поиск</button>
                     </form>
                 </div>
             </div>
@@ -88,8 +88,8 @@ include('news.php');
     <div class="container" style="width: 1100px;">
         <div class="grid" ;>
             <div class="news">
-                <?php while ($post = mysqli_fetch_assoc($post_result)) {
-                    if (empty($category)) { ?>
+                <?php
+                while ($post = mysqli_fetch_assoc($search_result)) { ?>
                 <div class="mt-3 card" style="width: 800px; flex-direction: row;">
                     <img src="<?= $post['picture'] ?>" class="card-img-top"
                         style="margin-left: 8px; width: 290px; height: auto; border-radius: 15px; padding: 6px 0px;"
@@ -120,77 +120,43 @@ include('news.php');
                                 далее</a></p>
                     </div>
                 </div>
-
-                <?php } else {
-                        if ($category == $post['category_id']) { ?>
-                <div class="mt-3 card" style="width: 800px; flex-direction: row;">
-                    <img src="<?= $post['picture'] ?>" class="card-img-top"
-                        style="margin-left: 8px; width: 250px; height: auto; border-radius: 15px; padding: 6px 0px;"
-                        alt="">
-                    <div class="card-body">
-                        <p style="display: flex; justify-content: space-between;">
-                            <a href="index.php?category=<?= $post['category_id'] ?>"
-                                style="text-align: left; color: red; ">
-                                <?= $post['category_name']; ?>
-                            </a>
-                            <span style="text-align: end; ">
-                                <?= $post['date']; ?>
-                            </span>
-                        </p>
-                        <h5 class="card-title">
-                            <a href="single.php?id=<?= $post['post_id'] ?>" style="color: black;">
-                                <?= $post['title']; ?>
-                            </a>
-                        </h5>
-                        <p class="card-text">
-                            <?= mb_strimwidth($post['text'], 0, 150, '...'); ?>
-                        </p>
-                        <p class="author" style="text-align: left;">
-                            Автор:
-                            <?= $post['login'] ?>
-                        </p>
-                        <p><a href="single.php?id=<?= $post['post_id']; ?>" class="btn btn-primary">Читать
-                                далее</a></p>
-                    </div>
+                <?php }
+                    ?>
+                <div class="search">
+                    <form class="d-flex" style="flex-direction: row;" role="search">
+                        <input class="form-control me-2 input" type="search" placeholder="Поиск статей"
+                            aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Поиск</button>
+                    </form>
                 </div>
-                <?php } ?>
-                <?php } ?>
-                <?php } ?>
-            </div>
-            <div class="search">
-                <form method="post" class="d-flex" style="flex-direction: row;">
-                    <input class="form-control me-2 input" type="search" placeholder="Поиск статей" name="text">
-                    <button class="btn btn-outline-success" type="submit" name="search">Поиск</button>
-                </form>
-            </div>
-            <div class="category">
-                <?php $last_news = mysqli_fetch_assoc($last_result) ?>
-                <div class="card" style="width: 268px;">
-                    <img src="<?= $last_news['picture'] ?>" class="card-img-top last-news" alt="">
-                    <div class="card-body">
-                        <p style="text-align: center; color: black;">
-                            Последняя новость!
-                        </p>
-                        <a href="index.php?category=<?= $last_news['category_id'] ?>"
-                            style="text-align: left; color: red; ">
-                            <?= $last_news['category_name']; ?>
-                        </a>
-                        <p class="card-text">
-                            <?= mb_strimwidth($last_news['text'], 0, 80, '...'); ?>
-                        </p>
-                        <p class="time">
-                            <?= $last_news['date']; ?>
-                        </p>
-                        <a href="single.php?id=<?= $last_news['post_id']; ?>" class="btn btn-primary">Читать
-                            далее</a>
+                <div class="category">
+                    <?php $last_news = mysqli_fetch_assoc($last_result) ?>
+                    <div class="card" style="width: 268px;">
+                        <img src="<?= $last_news['picture'] ?>" class="card-img-top last-news" alt="">
+                        <div class="card-body">
+                            <p style="text-align: center; color: black;">
+                                Последняя новость!
+                            </p>
+                            <a href="index.php?category=<?= $last_news['category_id'] ?>"
+                                style="text-align: left; color: red; ">
+                                <?= $last_news['category_name']; ?>
+                            </a>
+                            <p class="card-text">
+                                <?= mb_strimwidth($last_news['text'], 0, 80, '...'); ?>
+                            </p>
+                            <p class="time">
+                                <?= $last_news['date']; ?>
+                            </p>
+                            <a href="single.php?id=<?= $last_news['post_id']; ?>" class="btn btn-primary">Читать
+                                далее</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
-        crossorigin="anonymous"></script>
-</body>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+            crossorigin="anonymous"></script>
+</body> 
 
 </html>
